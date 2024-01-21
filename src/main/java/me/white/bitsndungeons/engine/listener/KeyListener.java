@@ -15,8 +15,9 @@ public class KeyListener {
         return instance;
     }
 
-    public static void keyCallback(long window, int key, int scanCode, int action, int mods) {
+    public static void keyCallback(long windowId, int key, int scanCode, int action, int mods) {
         KeyListener instance = getInstance();
+        assert key < instance.keyPressed.length;
         if (action == GLFW.GLFW_PRESS) {
             instance.keyPressed[key] = true;
         } else if (action == GLFW.GLFW_RELEASE) {
@@ -26,6 +27,7 @@ public class KeyListener {
 
     public static boolean isKeyPressed(int key) {
         KeyListener instance = getInstance();
-        return key < instance.keyPressed.length && instance.keyPressed[key];
+        assert key < instance.keyPressed.length;
+        return instance.keyPressed[key];
     }
 }

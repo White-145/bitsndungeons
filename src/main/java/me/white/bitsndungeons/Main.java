@@ -6,7 +6,8 @@ import me.white.bitsndungeons.scene.LevelScene;
 public class Main {
     public static void main(String[] args) {
         Window window = Window.getInstance();
-        window.changeScene(new LevelScene());
+        window.setTitle("Bits&Dungeons");
+        window.setScene(new LevelScene());
         window.run();
     }
 }

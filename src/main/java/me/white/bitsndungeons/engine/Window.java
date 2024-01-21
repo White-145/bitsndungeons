@@ -16,15 +16,15 @@ public class Window {
     private int height;
     private String title;
     private boolean isRunning;
-    private long glfwWindow;
+    private long windowId;
+    private Scene scene = null;
 
     private static Window instance = null;
-    private static Scene currentScene = null;
 
     private Window() {
         width = 780;
         height = 430;
-        title = "Bits&Dungeons";
+        title = "Window";
         isRunning = false;
     }
 
@@ -35,10 +35,22 @@ public class Window {
         return instance;
     }
 
-    public void changeScene(Scene scene) {
-        currentScene = scene;
+    public Scene getScene() {
+        return scene;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
         if (isRunning()) {
             scene.init();
+            scene.start();
+        }
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+        if (isRunning) {
+            GLFW.glfwSetWindowTitle(windowId, title);
         }
     }
 
@@ -47,12 +59,15 @@ public class Window {
     }
 
     public void run() {
+        if (isRunning) {
+            throw new IllegalStateException("Cannot run window twice.");
+        }
         System.out.println("Hello, LWJGL " + Version.getVersion() + "!");
 
         init();
         isRunning = true;
-        if (currentScene != null) {
-            currentScene.init();
+        if (scene != null) {
+            scene.init();
         }
         loop();
         terminate();
@@ -69,19 +84,19 @@ public class Window {
         GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_TRUE);
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
 
-        glfwWindow = GLFW.glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL);
-        if (glfwWindow == MemoryUtil.NULL) {
+        windowId = GLFW.glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL);
+        if (windowId == MemoryUtil.NULL) {
             throw new IllegalStateException("Failed to create the GLFW window.");
         }
 
-        GLFW.glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
-        GLFW.glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
-        GLFW.glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
-        GLFW.glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
+        GLFW.glfwSetCursorPosCallback(windowId, MouseListener::cursorPosCallback);
+        GLFW.glfwSetMouseButtonCallback(windowId, MouseListener::mouseButtonCallback);
+        GLFW.glfwSetScrollCallback(windowId, MouseListener::scrollCallback);
+        GLFW.glfwSetKeyCallback(windowId, KeyListener::keyCallback);
 
-        GLFW.glfwMakeContextCurrent(glfwWindow);
+        GLFW.glfwMakeContextCurrent(windowId);
         GLFW.glfwSwapInterval(1);
-        GLFW.glfwShowWindow(glfwWindow);
+        GLFW.glfwShowWindow(windowId);
 
         GL.createCapabilities();
     }
@@ -89,17 +104,19 @@ public class Window {
     private void loop() {
         double beginTime = Time.getTime();
         double dt = 0.0;
-        while (!GLFW.glfwWindowShouldClose(glfwWindow)) {
+        while (!GLFW.glfwWindowShouldClose(windowId)) {
             GLFW.glfwPollEvents();
 
             GL30.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             GL30.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
-            if (currentScene != null) {
-                currentScene.update(dt);
+            if (scene != null) {
+                scene.update(dt);
             }
 
-            GLFW.glfwSwapBuffers(glfwWindow);
+            GLFW.glfwSwapBuffers(windowId);
+
+            MouseListener.endFrame(windowId);
 
             double endTime = Time.getTime();
             dt = endTime - beginTime;
@@ -108,8 +125,8 @@ public class Window {
     }
 
     private void terminate() {
-        Callbacks.glfwFreeCallbacks(glfwWindow);
-        GLFW.glfwDestroyWindow(glfwWindow);
+        Callbacks.glfwFreeCallbacks(windowId);
+        GLFW.glfwDestroyWindow(windowId);
 
         GLFW.glfwTerminate();
         GLFW.glfwSetErrorCallback(null).free();

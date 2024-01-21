@@ -29,7 +29,7 @@ public class MouseListener {
         return instance;
     }
 
-    public static void mousePosCallback(long window, double posX, double posY) {
+    public static void cursorPosCallback(long windowId, double posX, double posY) {
         MouseListener instance = getInstance();
         instance.lastX = instance.posX;
         instance.lastY = instance.posY;
@@ -43,7 +43,7 @@ public class MouseListener {
         }
     }
 
-    public static void mouseButtonCallback(long window, int button, int action, int modifiers) {
+    public static void mouseButtonCallback(long windowId, int button, int action, int modifiers) {
         MouseListener instance = getInstance();
         if (action == GLFW.GLFW_PRESS) {
             if (button < instance.mouseButtonPressed.length) {
@@ -57,13 +57,13 @@ public class MouseListener {
         }
     }
 
-    public static void mouseScrollCallback(long window, double scrollX, double scrollY) {
+    public static void scrollCallback(long windowId, double scrollX, double scrollY) {
         MouseListener instance = getInstance();
         instance.scrollX = scrollX;
         instance.scrollY = scrollY;
     }
 
-    public static void endFrame(long window) {
+    public static void endFrame(long windowId) {
         MouseListener instance = getInstance();
         instance.scrollX = 0;
         instance.scrollY = 0;
