@@ -24,8 +24,7 @@ public class Camera {
     public Matrix4f getViewMatrix() {
         Vector3f cameraFront = new Vector3f(0.0f, 0.0f, -1.0f);
         Vector3f cameraUp = new Vector3f(0.0f, 1.0f, 0.0f);
-        viewMatrix.identity();
-        viewMatrix.lookAt(
+        viewMatrix.setLookAt(
                 new Vector3f(position.x, position.y, 20.0f),
                 cameraFront.add(position.x, position.y, 0.0f),
                 cameraUp

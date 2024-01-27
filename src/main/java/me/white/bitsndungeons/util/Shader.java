@@ -1,6 +1,5 @@
-package me.white.bitsndungeons.engine.render;
+package me.white.bitsndungeons.util;
 
-import me.white.bitsndungeons.engine.Resource;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;

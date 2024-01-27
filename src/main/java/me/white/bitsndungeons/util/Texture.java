@@ -1,6 +1,5 @@
-package me.white.bitsndungeons.engine.render;
+package me.white.bitsndungeons.util;
 
-import me.white.bitsndungeons.engine.Resource;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
@@ -63,6 +62,7 @@ public class Texture {
         }
         GL30.glPixelStorei(GL30.GL_UNPACK_ALIGNMENT, 1);
         GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, channel, width, height, 0, channel, GL30.GL_UNSIGNED_BYTE, image);
+        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D);
         STBImage.stbi_image_free(image);
     }
 

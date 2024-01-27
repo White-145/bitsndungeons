@@ -1,4 +1,4 @@
-package me.white.bitsndungeons.engine;
+package me.white.bitsndungeons.util;
 
 import java.io.IOException;
 
@@ -7,12 +7,12 @@ public class Resource {
         ASSET_SHADER("assets/shaders", "glsl"),
         ASSET_TEXTURE("assets/textures", "png");
 
-        final String prefix;
-        final String extension;
+        final String path;
+        final String file_type;
 
         Type(String prefix, String extension) {
-            this.prefix = prefix;
-            this.extension = extension;
+            this.path = prefix;
+            this.file_type = extension;
         }
     }
 
@@ -27,7 +27,7 @@ public class Resource {
     }
 
     public String getPath() {
-        return type.prefix + "/" + path + "." + type.extension;
+        return type.path + "/" + path + "." + type.file_type;
     }
 
     public byte[] readBytes() {
@@ -47,5 +47,19 @@ public class Resource {
 
     public boolean isOf(Type type) {
         return type == this.type;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Resource) {
+            Resource resource = (Resource) obj;
+            return type == resource.type && path.equals(resource.path);
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return 37 * (37 * type.file_type.hashCode() + path.hashCode()) + type.path.hashCode();
     }
 }

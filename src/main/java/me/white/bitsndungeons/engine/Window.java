@@ -107,8 +107,7 @@ public class Window {
         while (!GLFW.glfwWindowShouldClose(windowId)) {
             GLFW.glfwPollEvents();
 
-            GL30.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-            GL30.glClear(GL30.GL_COLOR_BUFFER_BIT);
+            GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
 
             if (scene != null) {
                 scene.update(dt);
